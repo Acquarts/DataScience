@@ -48,16 +48,6 @@ This project analyzes clinical data from thyroid cancer patients to predict recu
 
 This model can serve as a useful tool for **risk stratification** and **personalized clinical follow-up**.
 
-## 📂 Project Structure
-
-```
-├── CancerTiroides.pdf            # Original analysis notebook
-├── filtered_thyroid_data.csv     # Cleaned dataset
-├── README.md                     # This file
-```
-
----
-
 **Author:** Adrian Zambrana · April 2025
 
 ---
