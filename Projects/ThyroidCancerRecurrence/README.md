@@ -1,4 +1,4 @@
-# Thyroid Cancer Recurrence Prediction
+# Thyroid Cancer Recurrence Analysis and Prediction
 
 This project analyzes clinical data from thyroid cancer patients to predict recurrence after radioactive iodine (RAI) therapy. It explores patterns, answers key clinical questions, and trains machine learning models for predictive purposes.
 
