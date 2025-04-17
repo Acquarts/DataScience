@@ -1,1 +1,2 @@
+Welcome to the **Projects** section of my Data Science portfolio. Here you'll find a collection of real-world case studies, each addressing a specific problem using data-driven methodologies. The projects combine exploratory data analysis, statistical insights, and machine learning techniques to deliver practical solutions and predictive models. Each subfolder contains a complete end-to-end pipeline with datasets, notebooks, and detailed documentation.
 
