@@ -9,7 +9,7 @@ Working with three classes of students:
 - **Enrolled** (still active)  
 - **Graduate** (they finish their studies)
 
-I two models (Random Forest and XGBoost) and comparing how well each one predicts students’ final outcomes.
+I trained two models (Random Forest and XGBoost) and comparing how well each one predicts students’ final outcomes.
 
 ---
 
