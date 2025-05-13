@@ -3,13 +3,13 @@
 ## 🧠 Realistic Analysis of the Confusion Matrix Charts (Random Forest vs XGBoost)
 
 ### 🎓 Context:
-You’re working with three classes of students:
+Working with three classes of students:
 
 - **Dropout** (they leave the program)  
 - **Enrolled** (still active)  
 - **Graduate** (they finish their studies)
 
-You trained two models (Random Forest and XGBoost) and now you're comparing how well each one predicts students’ final outcomes.
+I two models (Random Forest and XGBoost) and comparing how well each one predicts students’ final outcomes.
 
 ---
 
