@@ -27,7 +27,7 @@ def train_model():
     return model
 
 def main():
-    st.title('HOUSE PRICE PREDICTION APP APP')
+    st.title('HOUSE PRICE PREDICTION APP')
     
     st.write('PUT IN YOUR HOUSE SIZE TO KNOW ITS PRICE')
     
