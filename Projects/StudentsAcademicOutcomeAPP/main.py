@@ -6,9 +6,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
 
-st.set_page_config(page_title="Student Dropout Prediction", layout="wide")
+st.set_page_config(page_title="Student's Academic Outcome", layout="wide")
 
-st.title("🎓 Student Dropout Prediction App")
+st.title("🎓 STUDENT'S ACADEMIC OUTCOME | Prediction APP")
 
 # Carga de datos (esto se puede cambiar por tu CSV real)
 @st.cache_data
@@ -111,14 +111,15 @@ with tabs[1]:
                 val = st.selectbox(f"{label}", options)
             else:
                 custom_limits = {
-                    "Admission grade": (0, 20),
-                    "Grade Average (2nd Semester)": (0, 20),
-                    "Grade Average (1st Semester)": (0, 20),
-                    "Subjects Passed (2nd Semester)": (0, 10),
-                    "Subjects Passed (1st Semester)": (0, 10),
+                    "Admission grade": (0, 200),
+                    "Grade Average (2nd Semester)": (0, 10),
+                    "Grade Average (1st Semester)": (0, 10),
+                    "Subjects Passed (2nd Semester)": (0, 20),
+                    "Subjects Passed (1st Semester)": (0, 20),
+                    "Age at enrollment": (17, 40),
                     "Total Evaluations (2nd Semester)": (0, 40),
                     "Total Evaluations (1st Semester)": (0, 40),
-                    "Previous Qualification Grade": (0, 20)
+                    "Previous Qualification Grade": (0, 10)
                 }
                 if label in custom_limits:
                     min_val, max_val = custom_limits[label]
