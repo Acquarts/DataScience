@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
+import os
 
 st.set_page_config(page_title=" Student's Academic Outcome", layout="wide")
 
@@ -13,7 +14,7 @@ st.title("🎓 STUDENT'S ACADEMIC OUTCOME | Prediction APP")
 # Carga de datos (esto se puede cambiar por tu CSV real)
 @st.cache_data
 def load_data():
-    df = pd.read_csv("students_dropout_academic_success.csv")
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "students_dropout_academic_success.csv"))
     return df
 
 # Entrenamiento básico del modelo y selección de top features
@@ -122,17 +123,3 @@ with tabs[1]:
         pred = model.predict(X_input)[0]
         label_map = {0: '❌ Dropout', 1: '⏳ Enrolled', 2: '✅ Graduate'}
         st.success(f"Prediction: {label_map[pred]}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
