@@ -97,7 +97,9 @@ with tabs[1]:
             "Curricular units 1st sem (grade)": "Grade Average (1st Semester)" if lang == "English" else "Nota Media (1º Semestre)",
             "Curricular units 1st sem (evaluations)": "Total Evaluations (1st Semester)" if lang == "English" else "Evaluaciones Totales (1º Semestre)",
             "Previous qualification (grade)": "Previous Qualification Grade" if lang == "English" else "Nota en Estudios Previos",
-            "Admission grade": "Admission grade" if lang == "English" else "Nota de Admisión"
+            "Admission grade": "Admission grade" if lang == "English" else "Nota de Admisión",
+            "Tuition fees up to date": "Tuition fees up to date" if lang == "English" else "Matriculaciones hasta la fecha",
+            "Age at enrollment": "Age at enrollment" if lang == "English" else "Edad al inscribirse"
         }
         for feature in feature_names:
             label = label_map.get(feature, feature)
@@ -119,7 +121,17 @@ with tabs[1]:
                     "Age at enrollment": (17, 40),
                     "Total Evaluations (2nd Semester)": (0, 40),
                     "Total Evaluations (1st Semester)": (0, 40),
-                    "Previous Qualification Grade": (0, 10)
+                    "Previous Qualification Grade": (0, 10),
+                    
+                    "Nota de Admisión": (0, 200),
+                    "Nota Media (2º Semestre)": (0, 10),
+                    "Nota Media (1º Semestre)": (0, 10),
+                    "Asignaturas Aprobadas (2º Semestre)": (0, 20),
+                    "Asignaturas Aprobadas (1º Semestre)": (0, 20),
+                    "Edad al inscribirse": (17, 40),
+                    "Evaluaciones Totales (2º Semestre)": (0, 40),
+                    "Evaluaciones Totales (1º Semestre)": (0, 40),
+                    "Nota en Estudios Previos": (0, 10),
                 }
                 if label in custom_limits:
                     min_val, max_val = custom_limits[label]
