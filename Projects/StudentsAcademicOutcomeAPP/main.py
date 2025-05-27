@@ -5,15 +5,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
-import os
 
-st.set_page_config(page_title=" Student's Academic Outcome", layout="wide")
+st.set_page_config(page_title="Student Dropout Prediction", layout="wide")
 
-st.title("🎓 STUDENT'S ACADEMIC OUTCOME | Prediction APP")
+st.title("🎓 Student Dropout Prediction App")
 
 # Carga de datos (esto se puede cambiar por tu CSV real)
 @st.cache_data
 def load_data():
+    import os
     df = pd.read_csv(os.path.join(os.path.dirname(__file__), "students_dropout_academic_success.csv"))
     return df
 
@@ -51,11 +51,16 @@ def train_model(df):
     return model, top_features_df
 
 # PESTAÑAS PRINCIPALES
-tabs = st.tabs(["📄 INFO", "📋 PREDICT"])
+lang = st.radio("Select language / Selecciona idioma", ["English", "Español"], horizontal=True)
+
+if lang == "English":
+    tabs = st.tabs(["📄 Info", "📋 Predict"])
+else:
+    tabs = st.tabs(["📄 Información", "📋 Predecir"])
 
 # TAB 1 - INFORMACIÓN DEL PROYECTO
 with tabs[0]:
-    st.header("About the Project")
+    st.header("About the Project" if lang == "English" else "Sobre el Proyecto")
     st.markdown("""
 This app predicts whether a student will:
 
@@ -64,11 +69,19 @@ This app predicts whether a student will:
 - ✅ Graduate
 
 Based on academic, economic, and demographic variables.
+""" if lang == "English" else """
+Esta app predice si un estudiante:
+
+- ❌ Abandonará los estudios
+- ⏳ Seguirá matriculado
+- ✅ Se graduará
+
+Basado en variables académicas, económicas y demográficas.
 """)
 
 # TAB 2 - FORMULARIO DE PREDICCIÓN
 with tabs[1]:
-    st.header("SIMULATES A STUDENT PROFILE")
+    st.header("Simulate a Student Profile" if lang == "English" else "Simula un Perfil de Estudiante")
 
     df = load_data()
     model, top_features_df = train_model(df)
@@ -97,16 +110,14 @@ with tabs[1]:
                 val = st.selectbox(f"{label}", options)
             else:
                 custom_limits = {
-                    "Admission grade": (0, 200),
-                    "Grade Average (2nd Semester)": (0, 10),
-                    "Grade Average (1st Semester)": (0, 10),
-                    "Subjects Passed (2nd Semester)": (0, 20),
-                    "Subjects Passed (1st Semester)": (0, 20),
-                    "Age at enrollment": (17, 40),
+                    "Admission grade": (0, 20),
+                    "Grade Average (2nd Semester)": (0, 20),
+                    "Grade Average (1st Semester)": (0, 20),
+                    "Subjects Passed (2nd Semester)": (0, 10),
+                    "Subjects Passed (1st Semester)": (0, 10),
                     "Total Evaluations (2nd Semester)": (0, 40),
                     "Total Evaluations (1st Semester)": (0, 40),
-                    "Previous Qualification Grade": (0, 10)
-                    
+                    "Previous Qualification Grade": (0, 20)
                 }
                 if label in custom_limits:
                     min_val, max_val = custom_limits[label]
@@ -116,10 +127,15 @@ with tabs[1]:
                 val = st.number_input(f"{label}", min_value=min_val, max_value=max_val, value=min_val)
 
             user_input[feature] = val
-        submitted = st.form_submit_button("Predict")
+        submitted = st.form_submit_button("Predict" if lang == "English" else "Predecir")
 
     if submitted:
         X_input = pd.DataFrame([user_input])[feature_names]
         pred = model.predict(X_input)[0]
+        label_map = {0: '❌ Dropout', 1: '⏳ Enrolled', 2: '✅ Graduate'}
+        st.success(f"Prediction: {label_map[pred]}" if lang == "English" else f"Predicción: {label_map[pred]}")
+
+
+
         label_map = {0: '❌ Dropout', 1: '⏳ Enrolled', 2: '✅ Graduate'}
         st.success(f"Prediction: {label_map[pred]}")
