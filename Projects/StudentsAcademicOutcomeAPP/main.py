@@ -90,13 +90,14 @@ with tabs[1]:
     user_input = {}
     with st.form("prediction_form"):
         label_map = {
-            "Curricular units 2nd sem (approved)": "Subjects Passed (2nd Semester)",
-            "Curricular units 2nd sem (grade)": "Grade Average (2nd Semester)",
-            "Curricular units 2nd sem (evaluations)": "Total Evaluations (2nd Semester)",
-            "Curricular units 1st sem (approved)": "Subjects Passed (1st Semester)",
-            "Curricular units 1st sem (grade)": "Grade Average (1st Semester)",
-            "Curricular units 1st sem (evaluations)": "Total Evaluations (1st Semester)",
-            "Previous qualification (grade)": "Previous Qualification Grade"
+            "Curricular units 2nd sem (approved)": "Subjects Passed (2nd Semester)" if lang == "English" else "Asignaturas Aprobadas (2º Semestre)",
+            "Curricular units 2nd sem (grade)": "Grade Average (2nd Semester)" if lang == "English" else "Nota Media (2º Semestre)",
+            "Curricular units 2nd sem (evaluations)": "Total Evaluations (2nd Semester)" if lang == "English" else "Evaluaciones Totales (2º Semestre)",
+            "Curricular units 1st sem (approved)": "Subjects Passed (1st Semester)" if lang == "English" else "Asignaturas Aprobadas (1º Semestre)",
+            "Curricular units 1st sem (grade)": "Grade Average (1st Semester)" if lang == "English" else "Nota Media (1º Semestre)",
+            "Curricular units 1st sem (evaluations)": "Total Evaluations (1st Semester)" if lang == "English" else "Evaluaciones Totales (1º Semestre)",
+            "Previous qualification (grade)": "Previous Qualification Grade" if lang == "English" else "Nota en Estudios Previos",
+            "Admission grade": "Admission grade" if lang == "English" else "Nota de Admisión"
         }
         for feature in feature_names:
             label = label_map.get(feature, feature)
@@ -136,6 +137,3 @@ with tabs[1]:
         st.success(f"Prediction: {label_map[pred]}" if lang == "English" else f"Predicción: {label_map[pred]}")
 
 
-
-        label_map = {0: '❌ Dropout', 1: '⏳ Enrolled', 2: '✅ Graduate'}
-        st.success(f"Prediction: {label_map[pred]}")
