@@ -54,8 +54,17 @@ with tabs[1]:
 
     model = load_model()
     df = load_data()
-    feature_names = df.drop("target", axis=1).columns.tolist()
-
+    feature_names = [
+    'Curricular units 2nd sem (credited)',
+    'Curricular units 2nd sem (evaluations)',
+    'Curricular units 2nd sem (grade)',
+    'Admission grade',
+    'Tuition fees up to date',
+    'Age at enrollment',
+    'Previous qualification (grade)'
+]
+    df = df[feature_names + ["target"]]
+    
     user_input = {}
     with st.form("prediction_form"):
         label_map = {
@@ -82,23 +91,19 @@ with tabs[1]:
                 custom_limits = {
                     "Admission grade": (100, 150),
                     "Grade Average (2nd Semester)": (0, 20),
-                    "Grade Average (1st Semester)": (0, 20),
                     "Subjects Passed (2nd Semester)": (0, 10),
-                    "Subjects Passed (1st Semester)": (0, 10),
                     "Age at enrollment": (17, 22),
-                    "Total Evaluations (2nd Semester)": (0, 40),
-                    "Total Evaluations (1st Semester)": (0, 40),
-                    "Previous Qualification Grade": (0, 20),
+                    "Total Evaluations (2nd Semester)": (0, 20),
+                    "Previous Qualification Grade": (100, 150),
+                    "Tuition fees up to date": (0, 1),
 
                     "Nota de Admisión": (100, 150),
                     "Nota Media (2º Semestre)": (0, 20),
-                    "Nota Media (1º Semestre)": (0, 20),
                     "Asignaturas Aprobadas (2º Semestre)": (0, 10),
-                    "Asignaturas Aprobadas (1º Semestre)": (0, 10),
                     "Edad al inscribirse": (17, 22),
-                    "Evaluaciones Totales (2º Semestre)": (0, 40),
-                    "Evaluaciones Totales (1º Semestre)": (0, 40),
-                    "Nota en Estudios Previos": (0, 20)
+                    "Evaluaciones Totales (2º Semestre)": (0, 20),
+                    "Nota media en Estudios Previos": (100, 150),
+                    "Matriculaciones hasta la fecha": (0, 1)
                 }
                 if label in custom_limits:
                     min_val, max_val = custom_limits[label]
