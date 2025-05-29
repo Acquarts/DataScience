@@ -59,12 +59,9 @@ with tabs[1]:
     user_input = {}
     with st.form("prediction_form"):
         label_map = {
-            "Curricular units 2nd sem (approved)": "Subjects Passed (2nd Semester)" if lang == "English" else "Asignaturas Aprobadas (2º Semestre)",
+            "Curricular units 2nd sem (credited)": "Subjects Passed (2nd Semester)" if lang == "English" else "Asignaturas Aprobadas (2º Semestre)",
             "Curricular units 2nd sem (grade)": "Grade Average (2nd Semester)" if lang == "English" else "Nota Media (2º Semestre)",
             "Curricular units 2nd sem (evaluations)": "Total Evaluations (2nd Semester)" if lang == "English" else "Evaluaciones Totales (2º Semestre)",
-            "Curricular units 1st sem (approved)": "Subjects Passed (1st Semester)" if lang == "English" else "Asignaturas Aprobadas (1º Semestre)",
-            "Curricular units 1st sem (grade)": "Grade Average (1st Semester)" if lang == "English" else "Nota Media (1º Semestre)",
-            "Curricular units 1st sem (evaluations)": "Total Evaluations (1st Semester)" if lang == "English" else "Evaluaciones Totales (1º Semestre)",
             "Previous qualification (grade)": "Previous Qualification Grade" if lang == "English" else "Nota en Estudios Previos",
             "Admission grade": "Admission grade" if lang == "English" else "Nota de Admisión",
             "Tuition fees up to date": "Tuition fees up to date" if lang == "English" else "Matriculaciones hasta la fecha",
@@ -83,22 +80,22 @@ with tabs[1]:
                 val = st.selectbox(f"{label}", options)
             else:
                 custom_limits = {
-                    "Admission grade": (0, 20),
+                    "Admission grade": (100, 150),
                     "Grade Average (2nd Semester)": (0, 20),
                     "Grade Average (1st Semester)": (0, 20),
                     "Subjects Passed (2nd Semester)": (0, 10),
                     "Subjects Passed (1st Semester)": (0, 10),
-                    "Age at enrollment": (17, 40),
+                    "Age at enrollment": (17, 22),
                     "Total Evaluations (2nd Semester)": (0, 40),
                     "Total Evaluations (1st Semester)": (0, 40),
                     "Previous Qualification Grade": (0, 20),
 
-                    "Nota de Admisión": (0, 20),
+                    "Nota de Admisión": (100, 150),
                     "Nota Media (2º Semestre)": (0, 20),
                     "Nota Media (1º Semestre)": (0, 20),
                     "Asignaturas Aprobadas (2º Semestre)": (0, 10),
                     "Asignaturas Aprobadas (1º Semestre)": (0, 10),
-                    "Edad al inscribirse": (17, 40),
+                    "Edad al inscribirse": (17, 22),
                     "Evaluaciones Totales (2º Semestre)": (0, 40),
                     "Evaluaciones Totales (1º Semestre)": (0, 40),
                     "Nota en Estudios Previos": (0, 20)
