@@ -1,58 +1,27 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import classification_report
+import joblib
+import os
 
 st.set_page_config(page_title="Student's Academic Outcome", layout="wide")
 
 st.title("🎓 STUDENT'S ACADEMIC OUTCOME | Prediction APP")
 
-# Carga de datos (esto se puede cambiar por tu CSV real)
+# Cargar modelo ya entrenado
+def load_model():
+    return joblib.load(os.path.join(os.path.dirname(__file__), "modelo_final_xgb.pkl"))
+
+# Cargar dataframe de referencia (estructura y límites)
 @st.cache_data
 def load_data():
-    import os
-    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "students_dropout_academic_success.csv"))
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "df_final.csv"))
     return df
 
-# Entrenamiento básico del modelo y selección de top features
-@st.cache_resource
-def train_model(df):
-    df = df.copy()
-    df['target'] = df['target'].astype(str)
-    target_map = {'Dropout': 0, 'Enrolled': 1, 'Graduate': 2}
-    df['target'] = df['target'].map(target_map)
-
-    categorical_cols = df.select_dtypes(include='object').columns
-    if 'target' in categorical_cols:
-        categorical_cols = categorical_cols.drop('target')
-
-    le = LabelEncoder()
-    for col in categorical_cols:
-        df[col] = le.fit_transform(df[col])
-
-    X_full = df.drop('target', axis=1)
-    y = df['target']
-
-    temp_model = RandomForestClassifier(random_state=42)
-    temp_model.fit(X_full, y)
-    importances = temp_model.feature_importances_
-    importance_df = pd.DataFrame({'Feature': X_full.columns, 'Importance': importances})
-    top_features_df = importance_df.sort_values(by='Importance', ascending=False).head(10)
-
-    # Entrenar modelo solo con las top 10 features
-    top_features = top_features_df['Feature'].tolist()
-    X = X_full[top_features]
-    model = RandomForestClassifier(random_state=42)
-    model.fit(X, y)
-
-    return model, top_features_df
-
-# PESTAÑAS PRINCIPALES
+# Selección de idioma
 lang = st.radio("Select language / Selecciona idioma", ["English", "Español"], horizontal=True)
 
+# Pestañas
 if lang == "English":
     tabs = st.tabs(["📄 Info", "📋 Predict"])
 else:
@@ -83,9 +52,9 @@ Basado en variables académicas, económicas y demográficas.
 with tabs[1]:
     st.header("Simulate a Student Profile" if lang == "English" else "Simula un Perfil de Estudiante")
 
+    model = load_model()
     df = load_data()
-    model, top_features_df = train_model(df)
-    feature_names = top_features_df['Feature'].tolist()
+    feature_names = df.drop("target", axis=1).columns.tolist()
 
     user_input = {}
     with st.form("prediction_form"):
@@ -101,6 +70,7 @@ with tabs[1]:
             "Tuition fees up to date": "Tuition fees up to date" if lang == "English" else "Matriculaciones hasta la fecha",
             "Age at enrollment": "Age at enrollment" if lang == "English" else "Edad al inscribirse"
         }
+
         for feature in feature_names:
             label = label_map.get(feature, feature)
             unique_vals = df[feature].unique()
@@ -113,25 +83,25 @@ with tabs[1]:
                 val = st.selectbox(f"{label}", options)
             else:
                 custom_limits = {
-                    "Admission grade": (0, 200),
-                    "Grade Average (2nd Semester)": (0, 10),
-                    "Grade Average (1st Semester)": (0, 10),
-                    "Subjects Passed (2nd Semester)": (0, 20),
-                    "Subjects Passed (1st Semester)": (0, 20),
+                    "Admission grade": (0, 20),
+                    "Grade Average (2nd Semester)": (0, 20),
+                    "Grade Average (1st Semester)": (0, 20),
+                    "Subjects Passed (2nd Semester)": (0, 10),
+                    "Subjects Passed (1st Semester)": (0, 10),
                     "Age at enrollment": (17, 40),
                     "Total Evaluations (2nd Semester)": (0, 40),
                     "Total Evaluations (1st Semester)": (0, 40),
-                    "Previous Qualification Grade": (0, 10),
-                    
-                    "Nota de Admisión": (0, 200),
-                    "Nota Media (2º Semestre)": (0, 10),
-                    "Nota Media (1º Semestre)": (0, 10),
-                    "Asignaturas Aprobadas (2º Semestre)": (0, 20),
-                    "Asignaturas Aprobadas (1º Semestre)": (0, 20),
+                    "Previous Qualification Grade": (0, 20),
+
+                    "Nota de Admisión": (0, 20),
+                    "Nota Media (2º Semestre)": (0, 20),
+                    "Nota Media (1º Semestre)": (0, 20),
+                    "Asignaturas Aprobadas (2º Semestre)": (0, 10),
+                    "Asignaturas Aprobadas (1º Semestre)": (0, 10),
                     "Edad al inscribirse": (17, 40),
                     "Evaluaciones Totales (2º Semestre)": (0, 40),
                     "Evaluaciones Totales (1º Semestre)": (0, 40),
-                    "Nota en Estudios Previos": (0, 10),
+                    "Nota en Estudios Previos": (0, 20)
                 }
                 if label in custom_limits:
                     min_val, max_val = custom_limits[label]
@@ -148,5 +118,3 @@ with tabs[1]:
         pred = model.predict(X_input)[0]
         label_map = {0: '❌ Dropout', 1: '⏳ Enrolled', 2: '✅ Graduate'}
         st.success(f"Prediction: {label_map[pred]}" if lang == "English" else f"Predicción: {label_map[pred]}")
-
-
