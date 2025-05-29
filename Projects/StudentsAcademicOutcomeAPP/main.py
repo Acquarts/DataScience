@@ -10,7 +10,7 @@ st.title("🎓 STUDENT'S ACADEMIC OUTCOME | Prediction APP")
 
 # Cargar modelo ya entrenado
 def load_model():
-    return joblib.load(os.path.join(os.path.dirname(__file__), "modelo_final_xgb.pkl"))
+    return joblib.load(os.path.join(os.path.dirname(__file__), "Model_XGBoost_Classifier.pkl"))
 
 # Cargar dataframe de referencia (estructura y límites)
 @st.cache_data
