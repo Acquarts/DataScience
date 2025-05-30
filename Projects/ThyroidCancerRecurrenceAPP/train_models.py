@@ -54,7 +54,7 @@ def prepare_features_and_target(df):
     """
     print("🎯 Preparando características y variable objetivo...")
     
-    # Definir características y objetivo (exactamente como en tu notebook)
+    # Definir características y objetivo 
     X = df.drop(['Recurred', 'Risk', 'Response'], axis=1)
     y = df['Recurred']
     
@@ -76,7 +76,7 @@ def train_and_evaluate_models(X, y, test_size=0.2, random_state=42):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # División train/test (exactamente como en tu notebook)
+    # División train/test 
     X_train, X_test, y_train, y_test = train_test_split(
         X_scaled, y, test_size=test_size, stratify=y, random_state=random_state
     )
