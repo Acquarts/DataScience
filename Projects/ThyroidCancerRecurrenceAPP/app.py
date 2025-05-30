@@ -82,14 +82,6 @@ def get_file_path(filename):
 def load_models_and_metadata():
     """Carga todos los modelos entrenados y metadatos"""
     try:
-        # Debug: mostrar archivos en el directorio
-        st.write("🔍 Buscando archivos en el directorio...")
-        current_dir = os.getcwd()
-        st.write(f"Directorio actual: {current_dir}")
-        st.write("Archivos encontrados:")
-        for file in os.listdir(current_dir):
-            st.write(f"  - {file}")
-        
         # Cargar modelos
         with open(get_file_path('logistic_regression.pkl'), 'rb') as f:
             lr_model = pickle.load(f)
