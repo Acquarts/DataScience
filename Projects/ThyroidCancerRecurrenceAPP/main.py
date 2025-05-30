@@ -44,9 +44,17 @@ st.markdown("""
     }
     .sidebar-info {
         background-color: #e8f4f8;
+        color: #1f1f1f;
         padding: 1rem;
         border-radius: 10px;
         margin-bottom: 1rem;
+    }
+    .sidebar-info h3 {
+        color: #1f77b4;
+        margin-bottom: 0.5rem;
+    }
+    .sidebar-info p, .sidebar-info ul, .sidebar-info li {
+        color: #2d2d2d;
     }
 </style>
 """, unsafe_allow_html=True)
