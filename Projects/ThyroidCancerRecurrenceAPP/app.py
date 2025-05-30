@@ -7,6 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import warnings
+import os
 warnings.filterwarnings('ignore')
 
 # Configuración de la página
@@ -60,31 +61,55 @@ st.markdown("""
 # Título principal
 st.markdown('<h1 class="main-header">🏥 Thyroid Cancer Recurrence Predictor</h1>', unsafe_allow_html=True)
 
+# Función para obtener la ruta correcta del archivo
+def get_file_path(filename):
+    """Obtiene la ruta correcta del archivo, considerando diferentes entornos"""
+    # Primero intenta en el directorio actual
+    if os.path.exists(filename):
+        return filename
+    
+    # Luego intenta en el directorio del script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_dir, filename)
+    if os.path.exists(file_path):
+        return file_path
+    
+    # Si no encuentra el archivo, devuelve el nombre original
+    return filename
+
 # Cargar modelos y metadatos
 @st.cache_resource
 def load_models_and_metadata():
     """Carga todos los modelos entrenados y metadatos"""
     try:
+        # Debug: mostrar archivos en el directorio
+        st.write("🔍 Buscando archivos en el directorio...")
+        current_dir = os.getcwd()
+        st.write(f"Directorio actual: {current_dir}")
+        st.write("Archivos encontrados:")
+        for file in os.listdir(current_dir):
+            st.write(f"  - {file}")
+        
         # Cargar modelos
-        with open('logistic_regression.pkl', 'rb') as f:
+        with open(get_file_path('logistic_regression.pkl'), 'rb') as f:
             lr_model = pickle.load(f)
-        with open('random_forest.pkl', 'rb') as f:
+        with open(get_file_path('random_forest.pkl'), 'rb') as f:
             rf_model = pickle.load(f)
-        with open('xgboost.pkl', 'rb') as f:
+        with open(get_file_path('xgboost.pkl'), 'rb') as f:
             xgb_model = pickle.load(f)
         
         # Cargar scaler y label encoders
-        with open('scaler.pkl', 'rb') as f:
+        with open(get_file_path('scaler.pkl'), 'rb') as f:
             scaler = pickle.load(f)
-        with open('label_encoders.pkl', 'rb') as f:
+        with open(get_file_path('label_encoders.pkl'), 'rb') as f:
             label_encoders = pickle.load(f)
         
         # Cargar metadatos
-        with open('model_metrics.json', 'r') as f:
+        with open(get_file_path('model_metrics.json'), 'r') as f:
             metrics = json.load(f)
-        with open('categorical_mappings.json', 'r') as f:
+        with open(get_file_path('categorical_mappings.json'), 'r') as f:
             categorical_mappings = json.load(f)
-        with open('feature_names.json', 'r') as f:
+        with open(get_file_path('feature_names.json'), 'r') as f:
             feature_names = json.load(f)
         
         models = {
@@ -99,12 +124,19 @@ def load_models_and_metadata():
         st.error(f"""
         ❌ **Error: No se encontraron los modelos entrenados**
         
-        Por favor, ejecuta primero el script de entrenamiento:
-        ```bash
-        python train_models.py
-        ```
-        
         Archivo faltante: {str(e)}
+        
+        Archivos necesarios:
+        - logistic_regression.pkl
+        - random_forest.pkl
+        - xgboost.pkl
+        - scaler.pkl
+        - label_encoders.pkl
+        - model_metrics.json
+        - categorical_mappings.json
+        - feature_names.json
+        
+        Por favor, asegúrate de que todos estos archivos estén en el repositorio.
         """)
         st.stop()
     except Exception as e:
