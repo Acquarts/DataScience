@@ -6,12 +6,6 @@ import json
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
-from xgboost import XGBClassifier
-import os
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -66,186 +60,10 @@ st.markdown("""
 # Título principal
 st.markdown('<h1 class="main-header">🏥 Thyroid Cancer Recurrence Predictor</h1>', unsafe_allow_html=True)
 
-def train_models_automatically():
-    """Entrena los modelos automáticamente si no existen"""
-    try:
-        # Verificar que el CSV existe
-        if not os.path.exists('filtered_thyroid_data.csv'):
-            st.error("❌ Dataset 'filtered_thyroid_data.csv' not found!")
-            st.write("Please make sure the CSV file is in the same directory as the app.")
-            return False
-        
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        
-        status_text.text("Loading dataset...")
-        progress_bar.progress(10)
-        
-        # Cargar datos
-        df = pd.read_csv('filtered_thyroid_data.csv')
-        
-        status_text.text("Preprocessing data...")
-        progress_bar.progress(20)
-        
-        # Guardar mapeos originales antes de LabelEncoder
-        categorical_mappings = {}
-        label_encoders = {}
-        
-        # Aplicar Label Encoding
-        for col in df.select_dtypes(include=['object', 'category']).columns:
-            le = LabelEncoder()
-            unique_values = df[col].unique()
-            categorical_mappings[col] = {val: idx for idx, val in enumerate(unique_values)}
-            df[col] = le.fit_transform(df[col])
-            label_encoders[col] = le
-        
-        # Preparar características y objetivo
-        X = df.drop(['Recurred', 'Risk', 'Response'], axis=1)
-        y = df['Recurred']
-        
-        status_text.text("Scaling features...")
-        progress_bar.progress(30)
-        
-        # Escalado
-        scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(X)
-        
-        # División train/test
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_scaled, y, test_size=0.2, stratify=y, random_state=42
-        )
-        
-        # Entrenar modelos
-        models = {}
-        metrics = {}
-        
-        status_text.text("Training Logistic Regression...")
-        progress_bar.progress(40)
-        
-        # Logistic Regression
-        lr = LogisticRegression(random_state=42)
-        lr.fit(X_train, y_train)
-        predict_lr = lr.predict(X_test)
-        report_lr = classification_report(y_test, predict_lr, output_dict=True)
-        acc_lr = accuracy_score(y_test, predict_lr)
-        
-        models['Logistic Regression'] = lr
-        metrics['Logistic Regression'] = {
-            'accuracy': acc_lr,
-            'precision': report_lr['macro avg']['precision'],
-            'recall': report_lr['macro avg']['recall'],
-            'f1_score': report_lr['macro avg']['f1-score']
-        }
-        
-        status_text.text("Training Random Forest...")
-        progress_bar.progress(60)
-        
-        # Random Forest
-        rf = RandomForestClassifier(random_state=42)
-        rf.fit(X_train, y_train)
-        predict_rf = rf.predict(X_test)
-        report_rf = classification_report(y_test, predict_rf, output_dict=True)
-        acc_rf = accuracy_score(y_test, predict_rf)
-        
-        models['Random Forest'] = rf
-        metrics['Random Forest'] = {
-            'accuracy': acc_rf,
-            'precision': report_rf['macro avg']['precision'],
-            'recall': report_rf['macro avg']['recall'],
-            'f1_score': report_rf['macro avg']['f1-score']
-        }
-        
-        status_text.text("Training XGBoost...")
-        progress_bar.progress(80)
-        
-        # XGBoost
-        xgb = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
-        xgb.fit(X_train, y_train)
-        predict_xgb = xgb.predict(X_test)
-        report_xgb = classification_report(y_test, predict_xgb, output_dict=True)
-        acc_xgb = accuracy_score(y_test, predict_xgb)
-        
-        models['XGBoost'] = xgb
-        metrics['XGBoost'] = {
-            'accuracy': acc_xgb,
-            'precision': report_xgb['macro avg']['precision'],
-            'recall': report_xgb['macro avg']['recall'],
-            'f1_score': report_xgb['macro avg']['f1-score']
-        }
-        
-        status_text.text("Saving models...")
-        progress_bar.progress(90)
-        
-        # Guardar modelos
-        with open('logistic_regression.pkl', 'wb') as f:
-            pickle.dump(lr, f)
-        with open('random_forest.pkl', 'wb') as f:
-            pickle.dump(rf, f)
-        with open('xgboost.pkl', 'wb') as f:
-            pickle.dump(xgb, f)
-        with open('scaler.pkl', 'wb') as f:
-            pickle.dump(scaler, f)
-        with open('label_encoders.pkl', 'wb') as f:
-            pickle.dump(label_encoders, f)
-        
-        # Guardar metadatos
-        metrics_json = {}
-        for model_name, model_metrics in metrics.items():
-            metrics_json[model_name] = {
-                'accuracy': float(model_metrics['accuracy']),
-                'precision': float(model_metrics['precision']),
-                'recall': float(model_metrics['recall']),
-                'f1_score': float(model_metrics['f1_score'])
-            }
-        
-        with open('model_metrics.json', 'w') as f:
-            json.dump(metrics_json, f, indent=4)
-        with open('categorical_mappings.json', 'w') as f:
-            json.dump(categorical_mappings, f, indent=4)
-        with open('feature_names.json', 'w') as f:
-            json.dump(X.columns.tolist(), f, indent=4)
-        
-        progress_bar.progress(100)
-        status_text.text("✅ Models trained and saved successfully!")
-        
-        return True
-        
-    except Exception as e:
-        st.error(f"❌ Error training models: {str(e)}")
-        return False
-
 # Cargar modelos y metadatos
 @st.cache_resource
 def load_models_and_metadata():
     """Carga todos los modelos entrenados y metadatos"""
-    
-    # Verificar si los modelos existen
-    required_files = [
-        'logistic_regression.pkl',
-        'random_forest.pkl', 
-        'xgboost.pkl',
-        'scaler.pkl',
-        'label_encoders.pkl',
-        'model_metrics.json',
-        'categorical_mappings.json',
-        'feature_names.json'
-    ]
-    
-    missing_files = [f for f in required_files if not os.path.exists(f)]
-    
-    if missing_files:
-        st.info("🔄 Models not found. Training models automatically...")
-        st.write("This may take a few moments on first run...")
-        
-        # Entrenar modelos automáticamente
-        success = train_models_automatically()
-        if not success:
-            st.error("❌ Failed to train models automatically")
-            st.stop()
-        
-        # Recargar después del entrenamiento
-        st.rerun()
-    
     try:
         # Cargar modelos
         with open('logistic_regression.pkl', 'rb') as f:
@@ -277,8 +95,20 @@ def load_models_and_metadata():
         
         return models, scaler, label_encoders, metrics, categorical_mappings, feature_names
         
+    except FileNotFoundError as e:
+        st.error(f"""
+        ❌ **Error: No se encontraron los modelos entrenados**
+        
+        Por favor, ejecuta primero el script de entrenamiento:
+        ```bash
+        python train_models.py
+        ```
+        
+        Archivo faltante: {str(e)}
+        """)
+        st.stop()
     except Exception as e:
-        st.error(f"Error loading models after training: {str(e)}")
+        st.error(f"Error inesperado al cargar modelos: {str(e)}")
         st.stop()
 
 # Cargar todo
