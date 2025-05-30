@@ -64,6 +64,10 @@ st.markdown('<h1 class="main-header">🏥 Thyroid Cancer Recurrence Predictor</h
 @st.cache_resource
 def load_models_and_metadata():
     """Carga todos los modelos entrenados y metadatos"""
+    import os
+    st.write(f"📁 Directorio actual: {os.getcwd()}")
+    st.write(f"📂 Archivos en el directorio: {os.listdir('.')}")
+    
     try:
         # Cargar modelos
         with open('logistic_regression.pkl', 'rb') as f:
