@@ -66,3 +66,72 @@ Using this dataset, we answered multiple questions with Python in our project.
 11. **Price**  
     Ticket price.  
     _Type:_ Target variable
+
+
+
+
+# ✈️ Flight Price Prediction - Insights
+
+## 1. Distribution and Trends
+- The dataset shows a wide variability in prices, with extreme cases on both ends (very cheap and very expensive flights).  
+- The **class** variable has a clear impact: **Business** flights have significantly higher prices than **Economy**.  
+- **days_left** (days remaining until the flight) follows the expected trend: the fewer the days left, the higher the price, with sharp increases in the last days before departure.  
+- Flight **duration** shows an inverse relationship with price for short and direct routes, but for longer routes the relationship is not always linear, likely due to combinations of stops and cities.  
+
+---
+
+## 2. Model Results
+
+### RandomForest
+- **RMSE:** ≈ 2,720  
+- **MAE:** ≈ 1,065  
+- **R²:** ≈ 0.9856  
+- Strong overall performance, low errors, and high explanatory power, though it tends to make bigger mistakes for high-priced flights.
+
+### XGBoost
+- **RMSE:** ≈ 2,454  
+- **MAE:** ≈ 1,258  
+- **R²:** ≈ 0.9883  
+- Slight improvement in RMSE and R² compared to RF, with a small increase in MAE.  
+- Cross-validation confirms model stability and generalization.
+
+---
+
+## 3. Feature Importance
+Top influential variables for both models:
+1. `class`  
+2. `days_left`  
+3. `duration`  
+4. `stops`  
+5. Time-related features (`departure_time_sin`, `arrival_time_cos`)  
+6. Origin/destination cities (moderate importance)  
+
+- Airline-related features have lower but still relevant impact.
+
+---
+
+## 4. Explainability (SHAP Analysis)
+- Not being Business class strongly reduces the predicted price.  
+- Booking with very few days left significantly increases the price.  
+- Shorter flight duration tends to lower the price.  
+- Airline and departure time effects are secondary but still present.  
+- Both models tend to have higher prediction errors for expensive flights, suggesting that extreme values in the dataset are harder to model.
+
+---
+
+## 5. Conclusions and Opportunities
+- Both models are robust, but **XGBoost** provides a slight edge in overall accuracy.  
+- Performance for high-priced flights could be improved by:
+  - Balancing the dataset in those price ranges.  
+  - Using hybrid models or transforming the target variable (e.g., `log(price)`).  
+- SHAP interpretability adds value in understanding the drivers of price and could be leveraged for:
+  - Dynamic pricing systems.  
+  - User recommendations.  
+
+---
+
+Thanks for reading! 😊  
+
+🔗 [LinkedIn - Adrián Zambrana](https://www.linkedin.com/in/adrianzambranaacquaroni/)  
+
+**Author:** *Adrián Zambrana | Aug 2025*
